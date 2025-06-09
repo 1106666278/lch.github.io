@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的动态数据页面</title>
+    <title>科技感数据展示</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 引入一个科技感字体，例如 Google Fonts 的 Roboto 或 Orbitron -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <h1>数据显示</h1>
+    <div class="container">
+        <!-- 左侧分类侧边栏 -->
+        <aside class="sidebar">
+            <h2>类别</h2>
+            <div id="category-filter">
+                <!-- 分类按钮将由 JavaScript 动态生成 -->
+                <button class="category-button active" data-category="all">全部</button>
+            </div>
+        </aside>
 
-    <div id="data-container">
-        <!-- 数据将由 JavaScript 插入到这里 -->
-        <p>加载中...</p>
+        <!-- 主内容区域 - 数据卡片 -->
+        <main class="main-content">
+            <h1>数据列表</h1>
+            <p id="loading-message">加载中...</p>
+            <div id="data-container" class="card-grid">
+                <!-- 数据卡片将由 JavaScript 动态生成 -->
+            </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
