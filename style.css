@@ -93,12 +93,16 @@ h1, h2 {
 
 
 /* 卡片网格布局 */
+/* 卡片网格布局 */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 响应式列 */
     gap: 20px; /* 卡片之间的间距 */
     margin-top: 20px;
+    /* 新增这一行 */
+    align-items: start; /* 防止卡片在同一行拉伸 */
 }
+
 
 /* 单个卡片样式 */
 .data-card {
