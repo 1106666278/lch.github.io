@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "name": "商品A",
+        "price": 19.99,
+        "description": "这是商品A的描述"
+    },
+    {
+        "id": 2,
+        "name": "商品B",
+        "price": 29.50,
+        "description": "这是商品B的描述"
+    },
+    {
+        "id": 3,
+        "name": "商品C",
+        "price": 10.00,
+        "description": "这是商品C的描述"
+    }
+]
