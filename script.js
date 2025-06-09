@@ -39,31 +39,35 @@ document.addEventListener('DOMContentLoaded', () => {
         dataToRender.forEach((item, index) => {
             const card = document.createElement('div');
             card.classList.add('data-card');
+            // 将完整内容存储在卡片元素的 data 属性中，方便复制按钮获取
+            card.dataset.fullContent = item.content;
 
-            // 计算动画延迟，制造错落效果
+            // 计算动画延迟
             card.style.animationDelay = `${index * 0.05}s`;
 
+            // 构建卡片内部 HTML
             card.innerHTML = `
                 <h3>${item.title}</h3>
                 <p class="card-content">${truncateContent(item.content)}</p>
-                ${item.content.length > 150 ? '<button class="toggle-content">显示全部</button>' : ''}
+                <div class="card-actions"> <!-- 按钮容器 -->
+                    ${item.content.length > 150 ? '<button class="toggle-content">显示全部</button>' : ''}
+                    <button class="copy-button">复制内容</button> <!-- 新增复制按钮 -->
+                </div>
             `;
 
             const contentElement = card.querySelector('.card-content');
             const toggleButton = card.querySelector('.toggle-content');
+            const copyButton = card.querySelector('.copy-button'); // 获取复制按钮
 
-            // 存储完整内容到元素的数据属性中
+            // 存储截断内容到元素的数据属性中 (如果内容长的话)
             if (item.content.length > 150) {
-                 contentElement.dataset.fullContent = item.content;
-                 contentElement.dataset.truncatedContent = truncateContent(item.content); // 存储截断内容
+                 contentElement.dataset.truncatedContent = truncateContent(item.content);
             } else {
-                // 如果内容不长，直接设置内容并移除按钮（如果JS模板里误加了）
-                contentElement.textContent = item.content;
-                 if(toggleButton) toggleButton.classList.add('hidden'); // 隐藏按钮
+                // 如果内容不长，隐藏“显示全部”按钮 (如果JS模板里误加了)
+                 if(toggleButton) toggleButton.classList.add('hidden');
             }
 
-
-            // 添加“显示全部”按钮事件监听器
+            // --- 添加“显示全部”按钮事件监听器 ---
             if (toggleButton) {
                 toggleButton.addEventListener('click', () => {
                     const isExpanded = contentElement.classList.contains('expanded');
@@ -71,16 +75,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (isExpanded) {
                         // 收起
                         contentElement.classList.remove('expanded');
-                        contentElement.textContent = contentElement.dataset.truncatedContent; // 使用存储的截断内容
+                        // 使用存储的截断内容，因为完整内容在 card.dataset.fullContent 里
+                        contentElement.textContent = contentElement.dataset.truncatedContent;
                         toggleButton.textContent = '显示全部';
                     } else {
                         // 展开
                         contentElement.classList.add('expanded');
-                        contentElement.textContent = contentElement.dataset.fullContent; // 使用存储的完整内容
+                        // 使用存储的完整内容
+                        contentElement.textContent = card.dataset.fullContent; // 从卡片元素获取完整内容
                         toggleButton.textContent = '收起';
                     }
                 });
             }
+
+            // --- 添加“复制内容”按钮事件监听器 ---
+            if (copyButton) {
+                copyButton.addEventListener('click', async () => { // 使用 async 函数处理 Promise
+                    const fullContent = card.dataset.fullContent; // 从卡片元素获取完整内容
+
+                    try {
+                        await navigator.clipboard.writeText(fullContent);
+                        // 复制成功反馈
+                        copyButton.textContent = '已复制!';
+                        copyButton.classList.add('success');
+                        copyButton.disabled = true; // 禁用按钮避免重复点击
+
+                        // 恢复按钮状态
+                        setTimeout(() => {
+                            copyButton.textContent = '复制内容';
+                            copyButton.classList.remove('success');
+                            copyButton.disabled = false;
+                        }, 1500); // 1.5 秒后恢复
+                    } catch (err) {
+                        console.error('复制失败: ', err);
+                         // 复制失败反馈
+                        copyButton.textContent = '复制失败!';
+                        copyButton.classList.add('error');
+                        copyButton.disabled = true;
+
+                         // 恢复按钮状态
+                        setTimeout(() => {
+                            copyButton.textContent = '复制内容';
+                            copyButton.classList.remove('error');
+                            copyButton.disabled = false;
+                        }, 1500); // 1.5 秒后恢复
+                    }
+                });
+            }
+
 
             dataContainer.appendChild(card);
         });
