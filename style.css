@@ -1,0 +1,221 @@
+/* 通用样式和背景 */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif; /* 正文使用 Roboto */
+    background-color: #0a192f; /* 深蓝背景 */
+    color: #e2e8f0; /* 浅色文字 */
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh; /* 确保背景覆盖整个视口 */
+}
+
+h1, h2 {
+    font-family: 'Orbitron', sans-serif; /* 标题使用 Orbitron */
+    color: #0ff; /* 霓虹蓝 */
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; /* 发光效果 */
+}
+
+.container {
+    display: flex;
+    gap: 20px; /* 侧边栏和主内容之间的间距 */
+    max-width: 1200px;
+    margin: 0 auto; /* 居中 */
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 250px;
+    flex-shrink: 0; /* 不会被挤压 */
+    padding: 20px;
+    /* Glassmorphism 效果 */
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    align-self: flex-start; /* 顶部对齐 */
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+#category-filter {
+    display: flex;
+    flex-direction: column; /* 按钮垂直排列 */
+}
+
+.category-button {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+.category-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.category-button.active {
+    background-color: #0ff; /* 选中状态使用霓虹蓝 */
+    color: #0a192f; /* 深色文字 */
+    border-color: #0ff;
+    font-weight: bold;
+}
+
+/* 主内容区域样式 */
+.main-content {
+    flex-grow: 1; /* 占据剩余空间 */
+}
+
+#loading-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0ff;
+    animation: pulse 1.5s infinite alternate; /* 加载动画 */
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+
+/* 卡片网格布局 */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 响应式列 */
+    gap: 20px; /* 卡片之间的间距 */
+    margin-top: 20px;
+}
+
+/* 单个卡片样式 */
+.data-card {
+    /* Glassmorphism 效果 */
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* 内容垂直排列 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 悬停动画 */
+    position: relative; /* 用于内容渐变遮罩 */
+
+    /* 初始动画 - 简单淡入 */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 可选: 悬停时的微交互 */
+.data-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+.data-card h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #0ff;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+/* 内容区域样式 */
+.card-content {
+    margin-bottom: 10px;
+    overflow: hidden; /* 隐藏超出部分 */
+    max-height: 80px; /* 初始只显示部分内容 */
+    position: relative; /* 用于渐变遮罩 */
+    transition: max-height 0.5s ease; /* 展开/收起动画 */
+    text-align: justify; /* 内容两端对齐 */
+}
+
+/* 内容展开时的样式 */
+.card-content.expanded {
+    max-height: none; /* 显示全部内容 */
+}
+
+/* 内容底部渐变遮罩，模拟科技感 */
+.card-content:not(.expanded)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px; /* 遮罩高度 */
+    background: linear-gradient(to bottom, rgba(10, 25, 47, 0), rgba(10, 25, 47, 0.8), rgba(10, 25, 47, 1)); /* 从透明到背景色的渐变 */
+    pointer-events: none; /* 允许点击穿透 */
+}
+
+
+/* "显示全部" 按钮样式 */
+.toggle-content {
+    background: none;
+    border: none;
+    color: #0ff; /* 霓虹蓝 */
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9em;
+    text-decoration: underline;
+    align-self: flex-start; /* 左对齐 */
+    transition: color 0.3s ease;
+}
+
+.toggle-content:hover {
+    color: #fff; /* 悬停变亮 */
+}
+
+/* 当内容不长时隐藏按钮 */
+.toggle-content.hidden {
+    display: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* 小屏幕下侧边栏在顶部 */
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        border-radius: 0; /* 可选：顶部侧边栏取消圆角 */
+    }
+
+    #category-filter {
+        flex-direction: row; /* 小屏幕下分类按钮水平排列 */
+        flex-wrap: wrap; /* 换行 */
+        gap: 10px; /* 按钮之间的小间距 */
+    }
+
+    .category-button {
+        margin-bottom: 0; /* 取消垂直间距 */
+    }
+
+    .main-content {
+        padding-top: 0; /* 取消顶部填充 */
+    }
+
+    .card-grid {
+         /* grid 会自动调整，这里可以不改 */
+    }
+}
