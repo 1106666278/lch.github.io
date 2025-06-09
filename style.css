@@ -1,3 +1,5 @@
+/* (Previous styles remain the same) */
+
 /* 通用样式和背景 */
 body {
     margin: 0;
@@ -135,13 +137,13 @@ h1, h2 {
     font-family: 'Orbitron', sans-serif;
     color: #0ff;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* 标题和内容之间的间距 */
     font-size: 1.3em;
 }
 
 /* 内容区域样式 */
 .card-content {
-    margin-bottom: 10px;
+    margin-bottom: 15px; /* 内容和按钮容器之间的间距 */
     overflow: hidden; /* 隐藏超出部分 */
     max-height: 80px; /* 初始只显示部分内容 */
     position: relative; /* 用于渐变遮罩 */
@@ -152,6 +154,7 @@ h1, h2 {
 /* 内容展开时的样式 */
 .card-content.expanded {
     max-height: none; /* 显示全部内容 */
+    margin-bottom: 10px; /* 展开后和按钮容器的间距稍微小一点 */
 }
 
 /* 内容底部渐变遮罩，模拟科技感 */
@@ -166,6 +169,15 @@ h1, h2 {
     pointer-events: none; /* 允许点击穿透 */
 }
 
+/* 按钮容器样式 */
+.card-actions {
+    display: flex; /* 使用 Flexbox 排列按钮 */
+    justify-content: flex-start; /* 按钮靠左对齐 */
+    gap: 10px; /* 按钮之间的间距 */
+    margin-top: auto; /* 将按钮推到底部 */
+    flex-wrap: wrap; /* 小屏幕下允许换行 */
+}
+
 
 /* "显示全部" 按钮样式 */
 .toggle-content {
@@ -176,8 +188,8 @@ h1, h2 {
     padding: 0;
     font-size: 0.9em;
     text-decoration: underline;
-    align-self: flex-start; /* 左对齐 */
     transition: color 0.3s ease;
+    font-family: 'Roboto', sans-serif; /* 确保字体一致 */
 }
 
 .toggle-content:hover {
@@ -188,6 +200,52 @@ h1, h2 {
 .toggle-content.hidden {
     display: none;
 }
+
+/* 新增: "复制内容" 按钮样式 */
+.copy-button {
+    background-color: rgba(0, 255, 255, 0.1); /* 淡青色背景 */
+    color: #0ff; /* 霓虹蓝文字 */
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    font-family: 'Roboto', sans-serif; /* 确保字体一致 */
+    display: inline-flex; /* 使用 flex 方便对齐内部图标/文本 */
+    align-items: center;
+    /* gap: 5px; 如果有图标和文本 */
+}
+
+.copy-button:hover {
+    background-color: rgba(0, 255, 255, 0.2);
+    border-color: #0ff;
+    color: #fff;
+}
+
+.copy-button:active {
+     background-color: rgba(0, 255, 255, 0.3);
+     border-color: #fff;
+}
+
+/* 可选: 复制成功/失败时的样式反馈 */
+.copy-button.success {
+    background-color: rgba(0, 255, 0, 0.2); /* 绿色背景 */
+    border-color: #0f0;
+    color: #0f0;
+}
+
+.copy-button.error {
+    background-color: rgba(255, 0, 0, 0.2); /* 红色背景 */
+    border-color: #f00;
+    color: #f00;
+}
+
+.copy-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 
 /* 响应式调整 */
 @media (max-width: 768px) {
@@ -218,4 +276,8 @@ h1, h2 {
     .card-grid {
          /* grid 会自动调整，这里可以不改 */
     }
+
+     .card-actions {
+        justify-content: center; /* 小屏幕下按钮居中 */
+     }
 }
