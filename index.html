@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="msvalidate.01" content="5778FE53F57EA8CF975E70C7FFB13DD5" />
     <meta name="description" content="精选海量AI提示词（Prompt）大全，涵盖写作、编程、艺术、生活等多个领域。助你更好地与AI互动，激发创意，提升效率。">
 
     <title>AI提示词大全 - 写作、编程、艺术Prompt</title>
@@ -37,13 +36,13 @@
 
         <!-- 主内容区域 - 数据卡片 -->
         <main class="main-content">
-            <h1>AI提示词大全</h1> <!-- 优化后的H1 -->
-           
-            <!-- 用于显示加载消息的元素 -->
-    <p id="loading-message">加载中...</p>
+            <!-- 新增搜索框容器 -->
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="搜索提示词或内容...">
+            </div>
 
-    <!-- 用于显示静态介绍和分类的元素 -->
-    <div id="static-intro">
+            <h1>prompt数据列表</h1>
+            <div id="static-intro">
         <p>欢迎来到AI提示词大全！这里收集了涵盖写作、编程、艺术、生活等众多领域的精选AI提示词（Prompt），帮助您更好地与大型语言模型（如GPT、Bing AI等）交流，获取更精准、更有创意的结果。</p>
         <h2>热门分类</h2>
         <ul>
@@ -56,6 +55,8 @@
             <li>抖音画图很火的AI提示词</li>
         </ul>
     </div>
+
+            <p id="loading-message">加载中...</p>
             <div id="data-container" class="card-grid">
                 <!-- 数据卡片将由 JavaScript 动态生成 -->
             </div>
