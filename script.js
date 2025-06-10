@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataContainer = document.getElementById('data-container');
     const categoryFilter = document.getElementById('category-filter');
     const loadingMessage = document.getElementById('loading-message');
+    const staticIntro = document.getElementById('static-intro'); // 获取新的静态内容容器
     let allData = []; // 存储所有数据的数组
 
     // JSON 数据文件路径
     const jsonFilePath = 'data.json';
 
-    // --- 数据加载 ---
+// --- 数据加载 ---
     fetch(jsonFilePath)
         .then(response => {
             if (!response.ok) {
@@ -17,14 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             allData = data; // 存储所有数据
+
             loadingMessage.style.display = 'none'; // 隐藏加载消息
-            renderCards(allData); // 首次渲染所有卡片
+            if (staticIntro) { // 检查元素是否存在
+                staticIntro.style.display = 'none'; // 隐藏静态介绍和分类
+                // 或者如果要彻底移除： staticIntro.remove();
+            }
+
+
+            renderCards(allData); // 渲染所有卡片
             createCategoryFilters(allData); // 创建分类按钮
+
         })
         .catch(error => {
             console.error('获取或处理数据时出错:', error);
-            loadingMessage.textContent = '加载数据失败。';
+            loadingMessage.textContent = '加载数据失败。'; // 显示失败消息
             loadingMessage.style.color = 'red';
+            // 加载失败时，保留 staticIntro 是合适的
         });
 
     // --- 渲染卡片 ---
