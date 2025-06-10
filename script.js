@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataContainer = document.getElementById('data-container');
     const categoryFilter = document.getElementById('category-filter');
     const loadingMessage = document.getElementById('loading-message');
+    const staticIntro = document.getElementById('static-intro'); // 获取新的静态内容容器
     const searchInput = document.getElementById('search-input'); // 获取搜索输入框
     let allData = []; // 存储所有数据的数组
     let currentCategory = 'all'; // 存储当前选中的分类
@@ -20,6 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             allData = data; // 存储所有数据
             loadingMessage.style.display = 'none'; // 隐藏加载消息
+            if (staticIntro) { // 检查元素是否存在
+                staticIntro.style.display = 'none'; // 隐藏静态介绍和分类
+                // 或者如果要彻底移除： staticIntro.remove();
+            }
+
             filterAndRenderCards(); // 首次过滤并渲染所有卡片
             createCategoryFilters(allData); // 创建分类按钮
         })
