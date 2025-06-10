@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loading-message');
     const searchInput = document.getElementById('search-input'); // 获取搜索输入框
     let allData = []; // 存储所有数据的数组
-    let currentFilteredData = []; // 存储当前分类过滤后的数据
     let currentCategory = 'all'; // 存储当前选中的分类
 
     // JSON 数据文件路径
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             allData = data; // 存储所有数据
             loadingMessage.style.display = 'none'; // 隐藏加载消息
-            currentFilteredData = allData; // 初始设置当前过滤数据为全部数据
             filterAndRenderCards(); // 首次过滤并渲染所有卡片
             createCategoryFilters(allData); // 创建分类按钮
         })
@@ -40,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ? allData
             : allData.filter(item => item.category === currentCategory);
 
-        // 2. 再根据搜索词过滤 (在分类过滤后的结果上进行)
+        // 2. 再根据搜索词过滤 (只检查 title)
         const finalFilteredData = dataAfterCategoryFilter.filter(item => {
+            // 仅根据 title 进行搜索过滤
             const titleMatch = item.title && item.title.toLowerCase().includes(searchTerm);
-            const contentMatch = item.content && item.content.toLowerCase().includes(searchTerm);
-            return titleMatch || contentMatch; // 标题或内容包含搜索词即匹配
+            return titleMatch; // 如果 title 包含搜索词，则匹配
         });
 
         renderCards(finalFilteredData); // 渲染最终过滤后的数据
@@ -56,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dataContainer.innerHTML = ''; // 清空当前显示的卡片
 
         if (dataToRender.length === 0) {
-            dataContainer.innerHTML = '<p style="text-align: center; color: #e2e8f0;">没有找到匹配的数据。</p>';
+            dataContainer.innerHTML = '<p style="text-align: center; color: rgba(226, 232, 240, 0.8);">没有找到匹配的数据。</p>';
             return;
         }
 
