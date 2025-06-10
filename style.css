@@ -9,6 +9,11 @@ body {
     line-height: 1.6;
     padding: 20px;
     min-height: 100vh; /* 确保背景覆盖整个视口 */
+    /* 添加一个背景图会增强毛玻璃效果，这里只是示例，您可自行替换 */
+    /* background-image: url('your-background-image.jpg'); */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* 背景固定，滚动时毛玻璃效果更明显 */
 }
 
 h1, h2 {
@@ -79,23 +84,35 @@ h1, h2 {
     flex-grow: 1; /* 占据剩余空间 */
 }
 
-/* 新增: 搜索框容器样式 */
+/* 新增: 搜索框容器样式 - 应用毛玻璃效果 */
 .search-container {
     margin-bottom: 20px; /* 搜索框和标题之间的间距 */
+    padding: 15px 20px; /* 容器内部填充 */
+    /* Glassmorphism 效果 */
+    background-color: rgba(255, 255, 255, 0.08); /* 半透明白色背景 */
+    backdrop-filter: blur(10px); /* **核心毛玻璃效果** */
+    -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* 半透明边框 */
+    border-radius: 10px; /* 圆角 */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* 阴影 */
+    display: flex; /* 使用 flex 布局使输入框填充容器 */
+    align-items: center;
 }
+
 
 /* 新增: 搜索输入框样式 */
 #search-input {
-    width: 100%; /* 宽度占满容器 */
-    padding: 12px 15px;
-    border: 1px solid rgba(0, 255, 255, 0.3); /* 淡青色边框 */
-    border-radius: 5px;
-    background-color: rgba(0, 255, 255, 0.05); /* 淡青色背景 */
+    flex-grow: 1; /* 占据容器剩余空间 */
+    padding: 10px 0; /* 调整内边距，因为容器已经有 padding */
+    border: none; /* 移除输入框本身的边框 */
+    background-color: transparent; /* 背景透明，看到容器的毛玻璃效果 */
     color: #e2e8f0; /* 文字颜色 */
     font-size: 1em;
     font-family: 'Roboto', sans-serif;
-    box-sizing: border-box; /* padding 和 border 不会增加元素的总宽度 */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none; /* 移除默认轮廓 */
+    /* 可选：在输入框底部加一个细线 */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: border-bottom-color 0.3s ease;
 }
 
 #search-input::placeholder {
@@ -103,10 +120,7 @@ h1, h2 {
 }
 
 #search-input:focus {
-    outline: none; /* 移除默认轮廓 */
-    border-color: #0ff; /* 聚焦时边框变亮 */
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5); /* 聚焦时发光效果 */
-    background-color: rgba(0, 255, 255, 0.1); /* 聚焦时背景稍微变深 */
+    border-bottom-color: #0ff; /* 聚焦时底部线变亮 */
 }
 
 
@@ -134,8 +148,9 @@ h1, h2 {
 /* 单个卡片样式 - 应用毛玻璃效果 */
 .data-card {
     /* Glassmorphism 效果 */
+     /* 使用和 search-container 相似的背景和模糊度 */
     background-color: rgba(255, 255, 255, 0.08); /* 半透明白色背景 */
-    backdrop-filter: blur(10px); /* **核心毛玻璃效果**，增加模糊度 */
+    backdrop-filter: blur(10px); /* **核心毛玻璃效果** */
     -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
     border: 1px solid rgba(255, 255, 255, 0.1); /* 半透明边框 */
     border-radius: 10px; /* 圆角 */
@@ -192,7 +207,7 @@ h1, h2 {
 }
 
 /* 内容底部渐变遮罩，模拟科技感 */
-/* 注意：毛玻璃背景下，渐变遮罩需要使用背景的颜色，而不是透明到黑色 */
+/* 注意：毛玻璃背景下，渐变遮罩需要使用 body 的背景颜色 */
 .card-content:not(.expanded)::after {
     content: "";
     position: absolute;
