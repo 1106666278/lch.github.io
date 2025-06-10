@@ -2,13 +2,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataContainer = document.getElementById('data-container');
     const categoryFilter = document.getElementById('category-filter');
     const loadingMessage = document.getElementById('loading-message');
-    const staticIntro = document.getElementById('static-intro'); // 获取新的静态内容容器
+    const searchInput = document.getElementById('search-input'); // 获取搜索输入框
     let allData = []; // 存储所有数据的数组
+    let currentFilteredData = []; // 存储当前分类过滤后的数据
+    let currentCategory = 'all'; // 存储当前选中的分类
 
     // JSON 数据文件路径
     const jsonFilePath = 'data.json';
 
-// --- 数据加载 ---
+    // --- 数据加载 ---
     fetch(jsonFilePath)
         .then(response => {
             if (!response.ok) {
@@ -18,31 +20,43 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             allData = data; // 存储所有数据
-
             loadingMessage.style.display = 'none'; // 隐藏加载消息
-            if (staticIntro) { // 检查元素是否存在
-                staticIntro.style.display = 'none'; // 隐藏静态介绍和分类
-                // 或者如果要彻底移除： staticIntro.remove();
-            }
-
-
-            renderCards(allData); // 渲染所有卡片
+            currentFilteredData = allData; // 初始设置当前过滤数据为全部数据
+            filterAndRenderCards(); // 首次过滤并渲染所有卡片
             createCategoryFilters(allData); // 创建分类按钮
-
         })
         .catch(error => {
             console.error('获取或处理数据时出错:', error);
-            loadingMessage.textContent = '加载数据失败。'; // 显示失败消息
+            loadingMessage.textContent = '加载数据失败。';
             loadingMessage.style.color = 'red';
-            // 加载失败时，保留 staticIntro 是合适的
         });
+
+    // --- 过滤并渲染卡片的主函数 ---
+    function filterAndRenderCards() {
+        const searchTerm = searchInput.value.toLowerCase(); // 获取搜索词并转为小写
+
+        // 1. 先根据当前分类过滤 allData
+        let dataAfterCategoryFilter = currentCategory === 'all'
+            ? allData
+            : allData.filter(item => item.category === currentCategory);
+
+        // 2. 再根据搜索词过滤 (在分类过滤后的结果上进行)
+        const finalFilteredData = dataAfterCategoryFilter.filter(item => {
+            const titleMatch = item.title && item.title.toLowerCase().includes(searchTerm);
+            const contentMatch = item.content && item.content.toLowerCase().includes(searchTerm);
+            return titleMatch || contentMatch; // 标题或内容包含搜索词即匹配
+        });
+
+        renderCards(finalFilteredData); // 渲染最终过滤后的数据
+    }
+
 
     // --- 渲染卡片 ---
     function renderCards(dataToRender) {
         dataContainer.innerHTML = ''; // 清空当前显示的卡片
 
         if (dataToRender.length === 0) {
-            dataContainer.innerHTML = '<p>没有找到匹配的数据。</p>';
+            dataContainer.innerHTML = '<p style="text-align: center; color: #e2e8f0;">没有找到匹配的数据。</p>';
             return;
         }
 
@@ -60,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${item.title}</h3>
                 <p class="card-content">${truncateContent(item.content)}</p>
                 <div class="card-actions"> <!-- 按钮容器 -->
-                    ${item.content.length > 150 ? '<button class="toggle-content">显示全部</button>' : ''}
+                    ${item.content && item.content.length > 150 ? '<button class="toggle-content">显示全部</button>' : ''}
                     <button class="copy-button">复制内容</button> <!-- 新增复制按钮 -->
                 </div>
             `;
@@ -70,12 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const copyButton = card.querySelector('.copy-button'); // 获取复制按钮
 
             // 存储截断内容到元素的数据属性中 (如果内容长的话)
-            if (item.content.length > 150) {
+             if (item.content && item.content.length > 150) {
                  contentElement.dataset.truncatedContent = truncateContent(item.content);
             } else {
                 // 如果内容不长，隐藏“显示全部”按钮 (如果JS模板里误加了)
                  if(toggleButton) toggleButton.classList.add('hidden');
             }
+
 
             // --- 添加“显示全部”按钮事件监听器 ---
             if (toggleButton) {
@@ -85,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (isExpanded) {
                         // 收起
                         contentElement.classList.remove('expanded');
-                        // 使用存储的截断内容，因为完整内容在 card.dataset.fullContent 里
-                        contentElement.textContent = contentElement.dataset.truncatedContent;
+                         // 确保 contentElement.dataset.truncatedContent 存在
+                        contentElement.textContent = contentElement.dataset.truncatedContent || truncateContent(item.content);
                         toggleButton.textContent = '显示全部';
                     } else {
                         // 展开
@@ -140,8 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 内容截断函数 ---
     function truncateContent(content, maxLength = 150) {
-        if (content.length <= maxLength) {
-            return content;
+        if (!content || content.length <= maxLength) {
+            return content || ''; // 处理 content 为 null/undefined 的情况
         }
         return content.substring(0, maxLength) + '...';
     }
@@ -169,23 +184,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 添加点击事件监听器
             button.addEventListener('click', () => {
+                // 更新当前选中的分类
+                currentCategory = category;
+
                 // 移除所有按钮的 active 类
                 categoryFilter.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
                 // 给当前点击的按钮添加 active 类
                 button.classList.add('active');
 
-                // 过滤数据
-                const selectedCategory = button.dataset.category;
-                const filteredData = selectedCategory === 'all'
-                    ? allData
-                    : allData.filter(item => item.category === selectedCategory);
-
-                // 渲染过滤后的数据
-                renderCards(filteredData);
+                // 过滤并渲染数据 (会同时应用搜索词)
+                filterAndRenderCards();
             });
 
             categoryFilter.appendChild(button);
         });
+
+        // 给“全部”按钮添加事件监听器 (如果它还没有的话)
+        const allButton = categoryFilter.querySelector('.category-button[data-category="all"]');
+        if (allButton && !allButton._hasClickListener) { // 避免重复添加
+             allButton.addEventListener('click', () => {
+                currentCategory = 'all';
+                categoryFilter.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                allButton.classList.add('active');
+                filterAndRenderCards();
+            });
+            allButton._hasClickListener = true; // 标记已添加
+        }
     }
+
+    // --- 添加搜索输入框事件监听器 ---
+    searchInput.addEventListener('input', () => {
+        // 当搜索框内容变化时，过滤并渲染数据 (会同时应用当前分类)
+        filterAndRenderCards();
+    });
 
 });
