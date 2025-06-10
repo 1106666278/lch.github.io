@@ -3,7 +3,7 @@
 
    <url>
       <loc>https://www.prompthub.work/</loc>  <!-- 将这里替换为你网站的实际域名 -->
-      <lastmod>2025-6-10</lastmod>  <!-- 可选：上次修改此页面的日期 (格式 YYYY-MM-DD) -->
+      <lastmod>2025-06-10</lastmod>  <!-- 可选：上次修改此页面的日期 (格式 YYYY-MM-DD) -->
       <changefreq>daily</changefreq> <!-- 可选：此页面可能更改的频率 (always, hourly, daily, weekly, monthly, yearly, never) -->
       <priority>1.0</priority>     <!-- 可选：此页面相对于您网站上其他页面的优先权 (0.0 到 1.0) -->
    </url>
