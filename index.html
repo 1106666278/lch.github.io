@@ -1,36 +1,43 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh"> <!-- JS will update this -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="精选海量AI提示词（Prompt）大全，涵盖写作、编程、艺术、生活等多个领域。助你更好地与AI互动，激发创意，提升效率。">
+    <!-- JS will update the content attribute -->
+    <meta name="description" content="" data-i18n="metaDescription">
 
-    <title>AI提示词大全 - 写作、编程、艺术Prompt</title>
+    <!-- JS will update the title tag -->
+    <title data-i18n="pageTitle"></title>
 
     <link rel="stylesheet" href="style.css?v=1.0.0">
-    <!-- 引入一个科技感字体，例如 Google Fonts 的 Roboto 或 Orbitron -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6KWD05Y92R"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6KWD05Y92R"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-6KWD05Y92R');
     </script>
-
 </head>
 <body>
 
     <div class="container">
         <!-- 左侧分类侧边栏 -->
         <aside class="sidebar">
-            <h2>类别</h2>
+            <h2 data-i18n="sidebarTitle"></h2> <!-- Mark for translation -->
+             <!-- 添加语言切换按钮 (示例) -->
+            <div class="language-switcher">
+                <button data-lang="zh">中文</button>
+                <button data-lang="en">English</button>
+                <!-- 添加更多语言按钮 -->
+            </div>
             <div id="category-filter">
-                <!-- 分类按钮将由 JavaScript 动态生成 -->
-                <button class="category-button active" data-category="all">全部</button>
+                <!-- "全部" 按钮也需要标记或在 JS 中处理 -->
+                <!-- data-category 仍然使用固定的 'all' -->
+                <button class="category-button active" data-category="all" data-i18n="buttonAll"></button>
+                <!-- 分类按钮将由 JavaScript 动态生成，文本使用 data.json 中的分类名称 -->
             </div>
         </aside>
 
@@ -38,27 +45,29 @@
         <main class="main-content">
             <!-- 新增搜索框容器 -->
             <div class="search-container">
-                <input type="text" id="search-input" placeholder="搜索提示词或内容...">
+                <input type="text" id="search-input" placeholder="" data-i18n-placeholder="searchPlaceholder"> <!-- Mark placeholder -->
             </div>
 
-            <h1>prompt数据列表</h1>
+            <h1 data-i18n="mainTitle"></h1> <!-- Mark for translation -->
             <div id="static-intro">
-        <p>欢迎来到AI提示词大全！这里收集了涵盖写作、编程、艺术、生活等众多领域的精选AI提示词（Prompt），帮助您更好地与大型语言模型（如GPT、Bing AI等）交流，获取更精准、更有创意的结果。</p>
-        <h2>热门分类</h2>
-        <ul>
-            <li>写作提示词</li>
-            <li>编程提示词</li>
-            <li>艺术创作提示词</li>
-            <li>画图提示词</li>
-            <li>网红画图提示词</li>
-            <li>抖音画图提示词</li>
-            <li>抖音画图很火的AI提示词</li>
-        </ul>
-    </div>
+                <!-- Mark static intro elements -->
+                <p data-i18n="introParagraph1"></p>
+                <h2 data-i18n="introH2"></h2>
+                <ul>
+                    <li data-i18n="introListItem1"></li>
+                    <li data-i18n="introListItem2"></li>
+                    <li data-i18n="introListItem3"></li>
+                    <li data-i18n="introListItem4"></li>
+                    <li data-i18n="introListItem5"></li>
+                    <li data-i18n="introListItem6"></li>
+                    <li data-i18n="introListItem7"></li>
+                </ul>
+            </div>
 
-            <p id="loading-message">加载中...</p>
+            <!-- Loading message needs translation -->
+            <p id="loading-message" data-i18n="loadingMessage"></p>
             <div id="data-container" class="card-grid">
-                <!-- 数据卡片将由 JavaScript 动态生成 -->
+                <!-- 数据卡片将由 JavaScript 动态生成，内容使用 data.json 的原始文本 -->
             </div>
         </main>
     </div>
