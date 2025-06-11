@@ -1,18 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ... (原有变量获取)
     const dataContainer = document.getElementById('data-container');
     const categoryFilter = document.getElementById('category-filter');
     const loadingMessage = document.getElementById('loading-message');
     const staticIntro = document.getElementById('static-intro');
     const searchInput = document.getElementById('search-input');
-    const languageSwitcher = document.querySelector('.language-switcher'); // 获取语言切换容器
+    const languageSwitcher = document.querySelector('.language-switcher');
 
-    let allData = []; // 存储所有数据 (来自 data.json)
-    let currentCategory = 'all'; // 存储当前选中的分类 (使用 data.json 中的分类名)
-    let translations = {}; // 存储当前语言的翻译文本
-    let currentLang = 'zh'; // 默认语言
+    let allData = [];
+    let currentCategory = 'all'; // 'all' or a category name from data.json
+    let translations = {};
+    let currentLang = 'zh'; // Default language
 
     // JSON 数据文件路径 (保持不变)
     const jsonFilePath = 'data.json';
+
+    // --- 新增: 获取评论相关的元素 ---
+    const commentsButton = document.getElementById('comments-button');
+    const commentsContainer = document.getElementById('comments-container');
+    const dataContentWrapper = document.getElementById('data-content-wrapper'); // 获取数据内容包裹容器
+    const giscusScript = document.querySelector('script[src^="https://giscus.app/client.js"]'); // 获取 Giscus 脚本标签
+
 
     // --- 多语言相关变量和函数 ---
 
@@ -34,12 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
             translations = await response.json();
             currentLang = lang;
             localStorage.setItem('preferredLang', lang); // 记住用户选择的语言
+
+            // 新增: 更新 Giscus 脚本的语言属性
+            if (giscusScript) {
+                 // Giscus uses language codes like 'zh-CN', 'en'
+                 // Need to map your lang codes ('zh', 'en') to Giscus codes
+                 const giscusLang = lang === 'zh' ? 'zh-CN' : lang; // Example mapping
+                 giscusScript.setAttribute('data-lang', giscusLang);
+                 // To force Giscus to reload with the new language, you might need to remove and re-add the script
+                 // This is more complex, usually setting the attribute is enough for subsequent loads or interactions.
+                 // A simpler approach might be to destroy and recreate the giscus instance.
+                 // For this simple example, just setting the attribute is ok.
+                 // For a robust solution, refer to Giscus documentation on changing themes/languages dynamically.
+            }
+
+
         } catch (error) {
             console.error('Error loading translations:', error);
-            // 加载默认语言或显示错误
-            translations = {}; // 清空翻译，可能导致显示键名
-            // 可以选择加载默认语言的翻译作为备用
-            // await fetch(`lang/zh.json`).then(res => res.json()).then(data => translations = data);
+            translations = {};
         }
     }
 
@@ -57,29 +77,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
          document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
             const key = element.getAttribute('data-i18n-placeholder');
-            if (key && element.placeholder !== undefined) { // 确保元素有 placeholder 属性
+            if (key && element.placeholder !== undefined) {
                 element.placeholder = getTranslation(key);
             }
         });
 
-        // 如果静态列表项使用了 data-i18n，上面的循环会处理
-        // 如果没有，且 introListItemX 在 lang.json 中，需要手动处理或修改 HTML
+         // 翻译静态列表项
          const listItems = staticIntro ? staticIntro.querySelectorAll('ul li') : [];
          if (listItems.length > 0) {
              listItems.forEach((item, index) => {
-                 // 假设 introListItem1 对应第一个 li，以此类推
                  const key = `introListItem${index + 1}`;
-                 if (translations[key]) { // 检查 lang.json 中是否有对应的键
+                 if (translations[key]) {
                       item.textContent = getTranslation(key);
                  }
              });
          }
 
-
         // 更新加载消息文本
         loadingMessage.textContent = getTranslation('loadingMessage');
-        // 错误消息在 catch 中处理
+        // 更新加载失败消息文本 (在 catch 块中使用)
+        // loadingMessage.textContent = getTranslation('loadingFailedMessage');
+
+        // 新增: 翻译评论按钮文本
+        if (commentsButton) {
+             commentsButton.textContent = getTranslation('buttonComments');
+        }
     }
+
+     // --- 新增: 处理按钮的 active 状态 ---
+    function updateActiveButton(activeButton) {
+        // 移除所有分类按钮和评论按钮的 active 类
+        categoryFilter.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+        // 给当前点击的按钮添加 active 类
+        if (activeButton) {
+             activeButton.classList.add('active');
+        }
+    }
+
 
     // 处理语言切换
     function handleLanguageSwitch(event) {
@@ -87,13 +121,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target.tagName === 'BUTTON' && target.dataset.lang) {
             const newLang = target.dataset.lang;
             if (supportedLangs.includes(newLang) && newLang !== currentLang) {
-                // 只加载新的翻译文件，数据文件不重新加载
                 loadTranslations(newLang).then(() => {
-                    translateStaticElements(); // 翻译静态内容
-                    // 重新创建分类按钮 (按钮文本需要翻译，但分类名称来自 data.json)
-                    createCategoryFilters(allData); // 使用原始数据创建分类按钮
-                     // 重新渲染卡片 (按钮文本需要翻译)
-                    filterAndRenderCards(); // 使用原始数据渲染卡片
+                    translateStaticElements(); // 翻译所有静态/JS文本
+                    // 分类按钮的文本 (来自 data.json) 不需要翻译
+                    // "全部" 按钮文本已在 translateStaticElements 中更新
+                    // 评论按钮文本已在 translateStaticElements 中更新
+                    // 数据卡片中的按钮文本会在 filterAndRenderCards -> renderCards 中使用 getTranslation 自动更新
+
+                    // 重新渲染当前选中的分类 (会使用新的按钮翻译)
+                    // 如果当前是评论页面，则保持评论页面
+                    if (currentCategory !== 'comments') {
+                         filterAndRenderCards();
+                    } else {
+                         // 如果当前是评论页面，只需要确保评论按钮文本更新即可
+                         // 评论内容本身由 Giscus 控制语言，通常取决于浏览器或 data-lang 属性
+                    }
+
+
                     // 更新语言切换按钮的 active 状态
                     updateLanguageSwitcherButtons(newLang);
                 });
@@ -106,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
          if (languageSwitcher) {
             languageSwitcher.querySelectorAll('button').forEach(button => {
                 if (button.dataset.lang === activeLang) {
-                    button.classList.add('active'); // 你需要在 CSS 中定义 .active 样式
+                    button.classList.add('active');
                 } else {
                     button.classList.remove('active');
                 }
@@ -115,24 +159,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 修改原有函数以支持多语言（仅按钮文本等） ---
+    // --- 修改原有函数以支持显示/隐藏数据或评论 ---
 
-    // 过滤并渲染卡片的主函数 - **不需要大改，因为它调用了 renderCards**
+    // 过滤并渲染卡片的主函数
     function filterAndRenderCards() {
+        // 新增: 确保在渲染数据时显示数据区域，隐藏评论区域
+        if (dataContentWrapper && commentsContainer) {
+            dataContentWrapper.classList.remove('hidden');
+            commentsContainer.classList.add('hidden');
+        }
+
         const searchTerm = searchInput.value.toLowerCase();
 
-        // 过滤逻辑保持不变，使用 data.json 中的原始 category 和 title 字段进行过滤和搜索
         let dataAfterCategoryFilter = currentCategory === 'all'
             ? allData
             : allData.filter(item => item.category === currentCategory); // 过滤使用原始分类名
 
         const finalFilteredData = dataAfterCategoryFilter.filter(item => {
-            // 仅根据 data.json 中的原始 title 进行搜索过滤
             const titleMatch = item.title && item.title.toLowerCase().includes(searchTerm);
             return titleMatch;
         });
 
-        renderCards(finalFilteredData); // 渲染最终过滤后的数据
+        renderCards(finalFilteredData);
     }
 
 
@@ -141,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dataContainer.innerHTML = '';
 
         if (dataToRender.length === 0) {
-            // 使用翻译的“没有找到匹配数据”消息
             dataContainer.innerHTML = `<p style="text-align: center; color: rgba(226, 232, 240, 0.8);">${getTranslation('noDataMessage')}</p>`;
             return;
         }
@@ -150,11 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.classList.add('data-card');
 
-            // 使用 data.json 中的原始标题和内容
             const itemTitle = item.title || '';
             const itemContent = item.content || '';
 
-            // 将完整内容存储在卡片元素的 data 属性中
             card.dataset.fullContent = itemContent;
 
             card.style.animationDelay = `${index * 0.05}s`;
@@ -173,30 +218,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const toggleButton = card.querySelector('.toggle-content');
             const copyButton = card.querySelector('.copy-button');
 
-             // 存储截断内容到元素的数据属性中 (如果内容长的话)
              if (itemContent.length > 150) {
                  contentElement.dataset.truncatedContent = truncateContent(itemContent);
             } else {
-                // 如果内容不长，隐藏“显示全部”按钮 (如果JS模板里误加了)
                  if(toggleButton) toggleButton.classList.add('hidden');
             }
-
 
             // --- 添加“显示全部”按钮事件监听器 ---
             if (toggleButton) {
                 toggleButton.addEventListener('click', () => {
                     const isExpanded = contentElement.classList.contains('expanded');
-
                     if (isExpanded) {
-                        // 收起
                         contentElement.classList.remove('expanded');
-                         // 使用原始截断内容
                         contentElement.textContent = contentElement.dataset.truncatedContent || truncateContent(itemContent);
                         toggleButton.textContent = getTranslation('buttonShowMore'); // 使用翻译文本
                     } else {
-                        // 展开
                         contentElement.classList.add('expanded');
-                        contentElement.textContent = card.dataset.fullContent; // 使用原始完整内容
+                        contentElement.textContent = card.dataset.fullContent;
                         toggleButton.textContent = getTranslation('buttonShowLess'); // 使用翻译文本
                     }
                 });
@@ -206,13 +244,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (copyButton) {
                 copyButton.addEventListener('click', async () => {
                     const fullContent = card.dataset.fullContent;
-
                     try {
                         await navigator.clipboard.writeText(fullContent);
                         copyButton.textContent = getTranslation('buttonCopied'); // 使用翻译文本
                         copyButton.classList.add('success');
                         copyButton.disabled = true;
-
                         setTimeout(() => {
                             copyButton.textContent = getTranslation('buttonCopy'); // 恢复翻译文本
                             copyButton.classList.remove('success');
@@ -223,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         copyButton.textContent = getTranslation('buttonCopyFailed'); // 使用翻译文本
                         copyButton.classList.add('error');
                         copyButton.disabled = true;
-
                         setTimeout(() => {
                             copyButton.textContent = getTranslation('buttonCopy'); // 恢复翻译文本
                             copyButton.classList.remove('error');
@@ -232,12 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
-
             dataContainer.appendChild(card);
         });
     }
 
-    // --- 内容截断函数 - 不需要修改，因为它处理的是字符串 ---
+    // --- 内容截断函数 - 不需要修改 ---
     function truncateContent(content, maxLength = 150) {
         if (!content || content.length <= maxLength) {
             return content || '';
@@ -246,17 +280,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 修改 createCategoryFilters 函数以使用翻译文本（分类名来自 data.json） ---
+    // --- 修改 createCategoryFilters 函数以处理新的评论按钮 ---
     function createCategoryFilters(data) {
-        const categories = new Set(['all']); // 使用 Set 确保唯一性，总是包含 'all'
+        const categories = new Set(['all']);
         data.forEach(item => {
              if (item.category) {
                 categories.add(item.category); // 直接使用 data.json 中的分类字符串
              }
         });
 
-        // 清空除“全部”按钮外的其他按钮
-         categoryFilter.querySelectorAll('.category-button:not([data-category="all"])').forEach(button => button.remove());
+        // 清空除“全部”按钮和“评论”按钮外的其他按钮
+         categoryFilter.querySelectorAll('.category-button:not([data-category="all"]):not([data-category="comments"])').forEach(button => button.remove());
 
         // 获取“全部”按钮并更新其文本
         const allButton = categoryFilter.querySelector('.category-button[data-category="all"]');
@@ -264,49 +298,73 @@ document.addEventListener('DOMContentLoaded', () => {
             allButton.textContent = getTranslation('buttonAll'); // 翻译“全部”按钮
         }
 
-        // 将 Set 转换为数组并排序（可选）以便分类按钮顺序一致
-        const sortedCategories = Array.from(categories).sort();
+        // 评论按钮文本已在 translateStaticElements 中处理
 
+        const sortedCategories = Array.from(categories).sort();
 
         sortedCategories.forEach(categoryName => {
             if (categoryName === 'all') return; // “全部”按钮已经处理
 
             const button = document.createElement('button');
             button.classList.add('category-button');
-            // data-category 存储 data.json 中的原始分类名
             button.dataset.category = categoryName;
-            // 按钮文本直接使用 data.json 中的原始分类名
-            // 如果你想翻译分类名，需要在 lang.json 中添加映射，并在这里查找翻译
-            // 例如：getTranslation('cat_' + categoryName) - 但前提是你在 lang.json 中维护了这种映射
             button.textContent = categoryName; // 分类按钮显示 data.json 中的原始分类名
 
             // 添加点击事件监听器
             button.addEventListener('click', () => {
                 currentCategory = categoryName; // 过滤时使用原始分类名
-                categoryFilter.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                filterAndRenderCards();
+                updateActiveButton(button); // 更新 active 状态
+                filterAndRenderCards(); // 过滤并渲染数据 (会显示数据区域)
             });
 
-            categoryFilter.appendChild(button);
+            // 将新创建的分类按钮插入到“全部”按钮和“评论”按钮之间
+            if (commentsButton) {
+                 categoryFilter.insertBefore(button, commentsButton);
+            } else {
+                 // 如果没有评论按钮，就添加到 categoryFilter 的末尾
+                 categoryFilter.appendChild(button);
+            }
+
         });
 
         // 给“全部”按钮添加事件监听器 (确保只添加一次)
          if (allButton && !allButton._hasClickListener) {
              allButton.addEventListener('click', () => {
                 currentCategory = 'all';
-                categoryFilter.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
-                allButton.classList.add('active');
-                filterAndRenderCards();
+                updateActiveButton(allButton); // 更新 active 状态
+                filterAndRenderCards(); // 过滤并渲染数据 (会显示数据区域)
             });
             allButton._hasClickListener = true;
         }
+
+         // --- 新增: 给“评论”按钮添加事件监听器 ---
+         if (commentsButton && !commentsButton._hasClickListener) {
+             commentsButton.addEventListener('click', () => {
+                 currentCategory = 'comments'; // 设置当前类别为评论
+                 updateActiveButton(commentsButton); // 更新 active 状态
+
+                 // 隐藏数据区域，显示评论区域
+                 if (dataContentWrapper && commentsContainer) {
+                     dataContentWrapper.classList.add('hidden');
+                     commentsContainer.classList.remove('hidden');
+                 }
+                 // Giscus 脚本会自动在 commentsContainer 中加载评论
+             });
+             commentsButton._hasClickListener = true;
+         }
+
     }
 
-    // --- 添加搜索输入框事件监听器 - 不需要修改，因为它调用了 filterAndRenderCards ---
+    // --- 添加搜索输入框事件监听器 - 不需要修改 ---
     searchInput.addEventListener('input', () => {
-        filterAndRenderCards();
+        // 搜索只在数据内容中进行，如果在评论页面，搜索框是隐藏的
+        // 如果用户在数据页面搜索，就正常过滤
+        if (currentCategory !== 'comments') {
+            filterAndRenderCards();
+        }
+         // 如果在评论页面，搜索框隐藏，此事件不会触发
     });
+
 
     // --- 页面加载时初始化 ---
     async function initialize() {
@@ -318,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
                           : 'zh'; // 如果浏览器语言不受支持，默认为中文
 
         // 2. 加载翻译文件
-        // 注意：这里只加载翻译文件，数据文件在后面加载
         await loadTranslations(initialLang);
 
         // 3. 翻译静态内容
@@ -347,13 +404,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     staticIntro.style.display = 'none';
                 }
 
+                // 首次加载时，默认显示数据内容，隐藏评论容器
+                if (dataContentWrapper && commentsContainer) {
+                    dataContentWrapper.classList.remove('hidden');
+                    commentsContainer.classList.add('hidden');
+                }
+
+
                 filterAndRenderCards(); // 首次过滤并渲染所有卡片 (使用 data.json 数据和当前语言的按钮文本)
-                createCategoryFilters(allData); // 创建分类按钮 (使用 data.json 的分类名和当前语言的“全部”按钮文本)
+                createCategoryFilters(allData); // 创建分类按钮 (使用 data.json 的分类名和当前语言的“全部”、“评论”按钮文本)
+
+                // 确保“全部”按钮在加载完成后是 active 状态
+                const allButton = categoryFilter.querySelector('.category-button[data-category="all"]');
+                if(allButton) {
+                    updateActiveButton(allButton);
+                }
+
             })
             .catch(error => {
                 console.error('获取或处理数据时出错:', error);
-                // 使用翻译的加载失败消息
-                loadingMessage.textContent = getTranslation('loadingFailedMessage');
+                loadingMessage.textContent = getTranslation('loadingFailedMessage'); // 使用翻译的加载失败消息
                 loadingMessage.style.color = 'red';
             });
     }
