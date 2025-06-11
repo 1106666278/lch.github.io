@@ -1,0 +1,27 @@
+{
+  "pageTitle": "AI Prompt Collection - Writing, Programming, Art Prompts",
+  "metaDescription": "Curated collection of AI prompts covering writing, programming, art, life, and more. Help you interact better with AI, spark creativity, and improve efficiency.",
+  "langAttr": "en",
+  "sidebarTitle": "Categories",
+  "searchPlaceholder": "Search prompts or content...",
+  "mainTitle": "Prompt Data List",
+  "introParagraph1": "Welcome to the AI Prompt Collection! Here you'll find a curated selection of AI prompts (Prompt) covering writing, programming, art, life, and many other fields, helping you communicate better with large language models (like GPT, Bing AI, etc.) and get more accurate and creative results.",
+  "introH2": "Popular Categories",
+  "introListItem1": "Writing Prompts",
+  "introListItem2": "Programming Prompts",
+  "introListItem3": "Art Creation Prompts",
+  "introListItem4": "Drawing Prompts",
+  "introListItem5": "Popular Drawing Prompts",
+  "introListItem6": "Douyin Drawing Prompts",
+  "introListItem7": "Trending Douyin AI Drawing Prompts",
+  "loadingMessage": "Loading...",
+  "loadingFailedMessage": "Failed to load data.",
+  "noDataMessage": "No matching data found.",
+  "buttonAll": "All",
+  "buttonShowMore": "Show More",
+  "buttonShowLess": "Collapse",
+  "buttonCopy": "Copy Content",
+  "buttonCopied": "Copied!",
+  "buttonCopyFailed": "Copy Failed!"
+  // 不需要包含 data.json 中的 category, title, content 的翻译
+}

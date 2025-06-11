@@ -1,0 +1,27 @@
+{
+  "pageTitle": "AI提示词大全 - 写作、编程、艺术Prompt",
+  "metaDescription": "精选海量AI提示词（Prompt）大全，涵盖写作、编程、艺术、生活等多个领域。助你更好地与AI互动，激发创意，提升效率。",
+  "langAttr": "zh",
+  "sidebarTitle": "类别",
+  "searchPlaceholder": "搜索提示词或内容...",
+  "mainTitle": "Prompt数据列表",
+  "introParagraph1": "欢迎来到AI提示词大全！这里收集了涵盖写作、编程、艺术、生活等众多领域的精选AI提示词（Prompt），帮助您更好地与大型语言模型（如GPT、Bing AI等）交流，获取更精准、更有创意的结果。",
+  "introH2": "热门分类",
+  "introListItem1": "写作提示词",
+  "introListItem2": "编程提示词",
+  "introListItem3": "艺术创作提示词",
+  "introListItem4": "画图提示词",
+  "introListItem5": "网红画图提示词",
+  "introListItem6": "抖音画图提示词",
+  "introListItem7": "抖音画图很火的AI提示词",
+  "loadingMessage": "加载中...",
+  "loadingFailedMessage": "加载数据失败。",
+  "noDataMessage": "没有找到匹配的数据。",
+  "buttonAll": "全部",
+  "buttonShowMore": "显示全部",
+  "buttonShowLess": "收起",
+  "buttonCopy": "复制内容",
+  "buttonCopied": "已复制!",
+  "buttonCopyFailed": "复制失败!"
+  // 不需要包含 data.json 中的 category, title, content 的翻译
+}
