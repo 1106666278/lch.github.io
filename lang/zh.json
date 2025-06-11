@@ -23,5 +23,5 @@
   "buttonCopy": "复制内容",
   "buttonCopied": "已复制!",
   "buttonCopyFailed": "复制失败!"
-  // 不需要包含 data.json 中的 category, title, content 的翻译
+  "buttonComments": "评论" 
 }
