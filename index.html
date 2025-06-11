@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- JS will update the content attribute -->
     <meta name="description" content="" data-i18n="metaDescription">
 
-    <!-- JS will update the title tag -->
     <title data-i18n="pageTitle"></title>
 
     <link rel="stylesheet" href="style.css?v=1.0.0">
@@ -26,7 +24,7 @@
     <div class="container">
         <!-- 左侧分类侧边栏 -->
         <aside class="sidebar">
-            <h2 data-i18n="sidebarTitle"></h2> <!-- Mark for translation -->
+            <h2 data-i18n="sidebarTitle"></h2>
              <!-- 添加语言切换按钮 (示例) -->
             <div class="language-switcher">
                 <button data-lang="zh">中文</button>
@@ -34,44 +32,71 @@
                 <!-- 添加更多语言按钮 -->
             </div>
             <div id="category-filter">
-                <!-- "全部" 按钮也需要标记或在 JS 中处理 -->
-                <!-- data-category 仍然使用固定的 'all' -->
+                <!-- "全部" 按钮 -->
                 <button class="category-button active" data-category="all" data-i18n="buttonAll"></button>
-                <!-- 分类按钮将由 JavaScript 动态生成，文本使用 data.json 中的分类名称 -->
+                <!-- 动态分类按钮将由 JavaScript 动态生成 -->
+                <!-- 新增的“评论”按钮 -->
+                <button class="category-button" data-category="comments" id="comments-button" data-i18n="buttonComments"></button>
             </div>
         </aside>
 
-        <!-- 主内容区域 - 数据卡片 -->
+        <!-- 主内容区域 -->
         <main class="main-content">
-            <!-- 新增搜索框容器 -->
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="" data-i18n-placeholder="searchPlaceholder"> <!-- Mark placeholder -->
+            <!-- 将数据相关的内容包裹在新的容器中 -->
+            <div id="data-content-wrapper">
+                <!-- 新增搜索框容器 -->
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="" data-i18n-placeholder="searchPlaceholder">
+                </div>
+
+                <h1 data-i18n="mainTitle"></h1>
+                <div id="static-intro">
+                    <p data-i18n="introParagraph1"></p>
+                    <h2 data-i18n="introH2"></h2>
+                    <ul>
+                        <li data-i18n="introListItem1"></li>
+                        <li data-i18n="introListItem2"></li>
+                        <li data-i18n="introListItem3"></li>
+                        <li data-i18n="introListItem4"></li>
+                        <li data-i18n="introListItem5"></li>
+                        <li data-i18n="introListItem6"></li>
+                        <li data-i18n="introListItem7"></li>
+                    </ul>
+                </div>
+
+                <p id="loading-message" data-i18n="loadingMessage"></p>
+                <div id="data-container" class="card-grid">
+                    <!-- 数据卡片将由 JavaScript 动态生成 -->
+                </div>
             </div>
 
-            <h1 data-i18n="mainTitle"></h1> <!-- Mark for translation -->
-            <div id="static-intro">
-                <!-- Mark static intro elements -->
-                <p data-i18n="introParagraph1"></p>
-                <h2 data-i18n="introH2"></h2>
-                <ul>
-                    <li data-i18n="introListItem1"></li>
-                    <li data-i18n="introListItem2"></li>
-                    <li data-i18n="introListItem3"></li>
-                    <li data-i18n="introListItem4"></li>
-                    <li data-i18n="introListItem5"></li>
-                    <li data-i18n="introListItem6"></li>
-                    <li data-i18n="introListItem7"></li>
-                </ul>
+            <!-- Giscus 评论容器，默认隐藏 -->
+            <div id="comments-container" class="hidden">
+                 <!-- Comments will be loaded here by Giscus script -->
             </div>
 
-            <!-- Loading message needs translation -->
-            <p id="loading-message" data-i18n="loadingMessage"></p>
-            <div id="data-container" class="card-grid">
-                <!-- 数据卡片将由 JavaScript 动态生成，内容使用 data.json 的原始文本 -->
-            </div>
         </main>
     </div>
 
     <script src="script.js?v=1.0.0"></script>
+
+    <!-- Giscus 评论脚本 -->
+    <!-- 请确保 data-repo, data-repo-id, data-category, data-category-id 是你的项目信息 -->
+    <script src="https://giscus.app/client.js"
+            data-repo="1106666278/lch.github.io"
+            data-repo-id="R_kgDOO3PuSg"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOO3PuSs4CrVxO"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-theme="preferred_color_scheme" <!-- 使用 CSS 中的主题 -->
+            data-lang="zh-CN" <!-- JS will update this attribute -->
+            crossorigin="anonymous"
+            async>
+    </script>
+
 </body>
 </html>
