@@ -326,7 +326,39 @@ h1, h2 {
     opacity: 0.6;
     cursor: not-allowed;
 }
+.hidden {
+    display: none !important; /* 使用 !important 确保覆盖其他 display 样式 */
+}
 
+/* 新增: Giscus 评论容器样式 */
+#comments-container {
+    margin-top: 20px;
+    padding: 20px;
+    /* 可选: 给评论区域也加上毛玻璃效果 */
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 新增: 评论按钮样式 (与分类按钮类似) */
+/* 它已经有了 .category-button 类，只需要覆盖或添加特定样式 */
+#comments-button {
+     /* 与其他 category-button 共享样式 */
+     /* 可以选择添加一些区分度，例如不同的背景色或边框 */
+     /* background-color: rgba(128, 0, 128, 0.1); Purple tone */
+     /* border-color: rgba(128, 0, 128, 0.3); */
+}
+
+/* 评论按钮激活状态 */
+#comments-button.active {
+    background-color: #0ff; /* 使用霓虹蓝 */
+    color: #0a192f;
+    border-color: #0ff;
+    font-weight: bold;
+}
 
 /* 响应式调整 */
 @media (max-width: 768px) {
