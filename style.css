@@ -21,7 +21,37 @@ h1, h2 {
     color: #0ff; /* 霓虹蓝 */
     text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; /* 发光效果 */
 }
+.language-switcher {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex; /* 水平排列按钮 */
+    gap: 10px; /* 按钮间距 */
+    flex-wrap: wrap; /* 小屏幕换行 */
+}
 
+.language-switcher button {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+.language-switcher button:hover {
+     background-color: rgba(255, 255, 255, 0.15);
+     border-color: rgba(255, 255, 255, 0.2);
+}
+
+.language-switcher button.active {
+    background-color: #0ff; /* 选中状态 */
+    color: #0a192f;
+    border-color: #0ff;
+    font-weight: bold;
+}
 .container {
     display: flex;
     gap: 20px; /* 侧边栏和主内容之间的间距 */
